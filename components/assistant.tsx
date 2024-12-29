@@ -139,7 +139,7 @@ export default function ChatAssistant({
                       type='submit'
                       disabled={input.length === 0 || assistantId.length === 0}
                     >
-                      <ArrowUpIcon size={14} />
+                      <ArrowUpIcon size={14} stroke='#000' />
                     </Button>
                   )}
                 </div>
