@@ -25,6 +25,7 @@ export const chat = pgTable('Chat', {
   title: text('title').notNull(),
   assistantId: text('assistantId'),
   modelId: text('modelId'),
+  threadId: text('threadId'),
   userId: uuid('userId')
     .notNull()
     .references(() => user.id),

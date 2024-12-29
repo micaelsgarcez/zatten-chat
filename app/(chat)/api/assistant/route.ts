@@ -1,5 +1,9 @@
+import { auth } from '@/app/(auth)/auth'
+import { getChatById, saveChat, saveMessages } from '@/lib/db/queries'
+import { generateUUID } from '@/lib/utils'
 import { AssistantResponse } from 'ai'
 import OpenAI from 'openai'
+import { generateTitleFromUserMessage } from '../../actions'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
@@ -8,20 +12,60 @@ const openai = new OpenAI({
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30
 
-export async function POST(req: Request) {
-  // Parse the request body
-  const input: {
-    threadId: string | null
-    message: string
-  } = await req.json()
+export async function POST(request: Request) {
+  const {
+    id,
+    message,
+    assistantId
+  }: { id: string; message: string; assistantId: string } = await request.json()
 
-  // Create a thread if needed
-  const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
+  const session = await auth()
+
+  if (!session || !session.user || !session.user.id) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+
+  const chat = await getChatById({ id })
+
+  let threadId =
+    chat && chat.threadId
+      ? chat.threadId
+      : (await openai.beta.threads.create({})).id
+  if (!chat) {
+    const title = await generateTitleFromUserMessage({
+      message: {
+        role: 'user',
+        content: message
+      }
+    })
+
+    await saveChat({
+      id,
+      userId: session.user.id,
+      title,
+      modelId: 'assistant',
+      assistantId,
+      threadId
+    })
+  }
+
+  const messageId = generateUUID()
+  await saveMessages({
+    messages: [
+      {
+        id: messageId,
+        chatId: id,
+        role: 'user',
+        content: message,
+        createdAt: new Date()
+      }
+    ]
+  })
 
   // Add a message to the thread
   const createdMessage = await openai.beta.threads.messages.create(threadId, {
     role: 'user',
-    content: input.message
+    content: message
   })
 
   return AssistantResponse(
@@ -29,40 +73,34 @@ export async function POST(req: Request) {
     async ({ forwardStream, sendDataMessage }) => {
       // Run the assistant on the thread
       const runStream = openai.beta.threads.runs.stream(threadId, {
-        assistant_id: 'asst_FU2u6oqLnVozTczRGi4GSmW1'
+        assistant_id: assistantId
       })
 
       // forward run status would stream message deltas
       let runResult = await forwardStream(runStream)
 
-      // status can be: queued, in_progress, requires_action, cancelling, cancelled, failed, completed, or expired
-      while (
-        runResult?.status === 'requires_action' &&
-        runResult.required_action?.type === 'submit_tool_outputs'
-      ) {
-        const tool_outputs =
-          runResult.required_action.submit_tool_outputs.tool_calls.map(
-            (toolCall: any) => {
-              const parameters = JSON.parse(toolCall.function.arguments)
+      if (runResult?.status === 'completed') {
+        runStream.finalMessages().then(async (finalMessages) => {
+          const messageAssistantId = generateUUID()
 
-              switch (toolCall.function.name) {
-                // configure your tool calls here
-
-                default:
-                  throw new Error(
-                    `Unknown tool call function: ${toolCall.function.name}`
-                  )
+          await saveMessages({
+            messages: [
+              {
+                id: messageAssistantId,
+                chatId: id,
+                role: 'assistant',
+                content: [
+                  {
+                    type: 'text',
+                    // @ts-ignore
+                    text: finalMessages[0].content[0].text.value
+                  }
+                ],
+                createdAt: new Date()
               }
-            }
-          )
-
-        runResult = await forwardStream(
-          openai.beta.threads.runs.submitToolOutputsStream(
-            threadId,
-            runResult.id,
-            { tool_outputs }
-          )
-        )
+            ]
+          })
+        })
       }
     }
   )

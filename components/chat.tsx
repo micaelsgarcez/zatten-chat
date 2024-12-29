@@ -2,7 +2,7 @@
 
 import type { Attachment, Message } from 'ai'
 import { useChat } from 'ai/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
 
 import { ChatHeader } from '@/components/chat-header'
@@ -23,7 +23,6 @@ export function Chat({
   isReadonly
 }: {
   id: string
-  defaultAssistantId?: string
   initialMessages: Array<Message>
   selectedModelId: string
   selectedVisibilityType: VisibilityType
@@ -46,16 +45,10 @@ export function Chat({
     body: { id, modelId: selectedModelId },
     initialMessages,
     experimental_throttle: 100,
-    api:
-      selectedModelId === 'assistant' ? '/api/chat-with-assistant' : undefined
-  })
-
-  useEffect(() => {
-    if (!isLoading) {
+    onFinish: () => {
       mutate('/api/history')
-      reload()
     }
-  }, [])
+  })
 
   const { data: votes } = useSWR<Array<Vote>>(`/api/vote?chatId=${id}`, fetcher)
 
@@ -86,21 +79,19 @@ export function Chat({
 
         <form className='flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl'>
           {!isReadonly && (
-            <div className='flex flex-col w-full gap-6'>
-              <MultimodalInput
-                chatId={id}
-                input={input}
-                setInput={setInput}
-                handleSubmit={handleSubmit}
-                isLoading={isLoading}
-                stop={stop}
-                attachments={attachments}
-                setAttachments={setAttachments}
-                messages={messages}
-                setMessages={setMessages}
-                append={append}
-              />
-            </div>
+            <MultimodalInput
+              chatId={id}
+              input={input}
+              setInput={setInput}
+              handleSubmit={handleSubmit}
+              isLoading={isLoading}
+              stop={stop}
+              attachments={attachments}
+              setAttachments={setAttachments}
+              messages={messages}
+              setMessages={setMessages}
+              append={append}
+            />
           )}
         </form>
       </div>

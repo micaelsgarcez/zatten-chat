@@ -50,6 +50,13 @@
       "when": 1735475702737,
       "tag": "0006_giant_spiral",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1735482392237,
+      "tag": "0007_deep_silver_fox",
+      "breakpoints": true
     }
   ]
 }

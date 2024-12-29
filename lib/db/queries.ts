@@ -52,12 +52,14 @@ export async function saveChat({
   userId,
   title,
   assistantId,
-  modelId
+  modelId,
+  threadId
 }: {
   id: string
   userId: string
   title: string
   assistantId?: string
+  threadId?: string
   modelId: string
 }) {
   try {
@@ -67,6 +69,7 @@ export async function saveChat({
       userId,
       title,
       assistantId: assistantId ?? null,
+      threadId: threadId ?? null,
       modelId
     })
   } catch (error) {
@@ -115,6 +118,19 @@ export async function saveMessages({ messages }: { messages: Array<Message> }) {
     return await db.insert(message).values(messages)
   } catch (error) {
     console.error('Failed to save messages in database', error)
+    throw error
+  }
+}
+
+export async function getMessageId({ id }: { id: string }) {
+  try {
+    return await db
+      .select()
+      .from(message)
+      .where(eq(message.id, id))
+      .orderBy(asc(message.createdAt))
+  } catch (error) {
+    console.error('Failed to get messages by chat id from database', error)
     throw error
   }
 }

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { auth } from '@/app/(auth)/auth'
+import ChatAssistant from '@/components/assistant'
 import { Chat } from '@/components/chat'
 import { DataStreamHandler } from '@/components/data-stream-handler'
 import { DEFAULT_MODEL_NAME, models } from '@/lib/ai/models'
@@ -37,14 +38,26 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
   return (
     <>
-      <Chat
-        id={chat.id}
-        defaultAssistantId={chat.assistantId ?? undefined}
-        initialMessages={convertToUIMessages(messagesFromDb)}
-        selectedModelId={selectedModelId}
-        selectedVisibilityType={chat.visibility}
-        isReadonly={session?.user?.id !== chat.userId}
-      />
+      {selectedModelId === 'assistant' ? (
+        <ChatAssistant
+          key={id}
+          id={id}
+          defaultAssistantId={chat.assistantId ?? undefined}
+          initialMessages={convertToUIMessages(messagesFromDb)}
+          selectedModelId={selectedModelId}
+          selectedVisibilityType='private'
+          isReadonly={false}
+        />
+      ) : (
+        <Chat
+          key={id}
+          id={id}
+          initialMessages={convertToUIMessages(messagesFromDb)}
+          selectedModelId={selectedModelId}
+          selectedVisibilityType='private'
+          isReadonly={false}
+        />
+      )}
       <DataStreamHandler id={id} />
     </>
   )
