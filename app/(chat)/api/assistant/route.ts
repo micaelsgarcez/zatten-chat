@@ -81,6 +81,7 @@ export async function POST(request: Request) {
 
       if (runResult?.status === 'completed') {
         runStream.finalMessages().then(async (finalMessages) => {
+          console.log('finalMessages :', finalMessages)
           const messageAssistantId = generateUUID()
 
           await saveMessages({
