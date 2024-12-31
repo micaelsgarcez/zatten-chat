@@ -1,6 +1,6 @@
-import { auth } from '@/app/(auth)/auth'
 import { getChatById, saveChat, saveMessages } from '@/lib/db/queries'
 import { generateUUID } from '@/lib/utils'
+import { auth } from '@clerk/nextjs/server'
 import { AssistantResponse } from 'ai'
 import OpenAI from 'openai'
 import { generateTitleFromUserMessage } from '../../actions'
@@ -19,9 +19,9 @@ export async function POST(request: Request) {
     assistantId
   }: { id: string; message: string; assistantId: string } = await request.json()
 
-  const session = await auth()
+  const { userId } = await auth()
 
-  if (!session || !session.user || !session.user.id) {
+  if (!userId) {
     return new Response('Unauthorized', { status: 401 })
   }
 
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     await saveChat({
       id,
-      userId: session.user.id,
+      userId: userId,
       title,
       modelId: 'assistant',
       assistantId,

@@ -1,14 +1,14 @@
-import { auth } from '@/app/(auth)/auth';
-import { getChatsByUserId } from '@/lib/db/queries';
+import { getChatsByUserId } from '@/lib/db/queries'
+import { auth } from '@clerk/nextjs/server'
 
 export async function GET() {
-  const session = await auth();
+  const { userId } = await auth()
 
-  if (!session || !session.user) {
-    return Response.json('Unauthorized!', { status: 401 });
+  if (!userId) {
+    return new Response('Unauthorized', { status: 401 })
   }
 
   // biome-ignore lint: Forbidden non-null assertion.
-  const chats = await getChatsByUserId({ id: session.user.id! });
-  return Response.json(chats);
+  const chats = await getChatsByUserId({ id: userId })
+  return Response.json(chats)
 }

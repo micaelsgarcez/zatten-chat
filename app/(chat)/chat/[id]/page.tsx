@@ -1,12 +1,12 @@
 import { notFound } from 'next/navigation'
 
-import { auth } from '@/app/(auth)/auth'
 import ChatAssistant from '@/components/assistant'
 import { Chat } from '@/components/chat'
 import { DataStreamHandler } from '@/components/data-stream-handler'
 import { DEFAULT_MODEL_NAME, models } from '@/lib/ai/models'
 import { getChatById, getMessagesByChatId } from '@/lib/db/queries'
 import { convertToUIMessages } from '@/lib/utils'
+import { auth } from '@clerk/nextjs/server'
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params
@@ -17,14 +17,14 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     notFound()
   }
 
-  const session = await auth()
+  const { userId } = await auth()
 
   if (chat.visibility === 'private') {
-    if (!session || !session.user) {
+    if (!userId) {
       return notFound()
     }
 
-    if (session.user.id !== chat.userId) {
+    if (userId !== chat.userId) {
       return notFound()
     }
   }

@@ -1,13 +1,13 @@
-import { auth } from '@/app/(auth)/auth'
 import { getMessageId, saveMessages } from '@/lib/db/queries'
+import { auth } from '@clerk/nextjs/server'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const messageId = searchParams.get('messageId')
 
-  const session = await auth()
+  const { userId } = await auth()
 
-  if (!session || !session.user) {
+  if (!userId) {
     return new Response('Unauthorized', { status: 401 })
   }
 
@@ -29,9 +29,9 @@ export async function POST(request: Request) {
   }: { id: string; message: string; role: string; chatId: string } =
     await request.json()
 
-  const session = await auth()
+  const { userId } = await auth()
 
-  if (!session || !session.user || !session.user.id) {
+  if (!userId) {
     return new Response('Unauthorized', { status: 401 })
   }
 

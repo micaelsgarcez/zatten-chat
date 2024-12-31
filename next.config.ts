@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         hostname: 'avatar.vercel.sh'
+      },
+      {
+        hostname: 'img.clerk.com'
       }
     ]
   }

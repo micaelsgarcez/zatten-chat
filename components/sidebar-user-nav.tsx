@@ -1,7 +1,5 @@
 'use client'
 import { ChevronUp } from 'lucide-react'
-import type { User } from 'next-auth'
-import { signOut } from 'next-auth/react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 
@@ -17,8 +15,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar'
+import { SignOutButton } from '@clerk/nextjs'
 
-export function SidebarUserNav({ user }: { user: User }) {
+export function SidebarUserNav({
+  user
+}: {
+  user: {
+    email: string
+    image: string
+  }
+}) {
   const { setTheme, theme } = useTheme()
 
   return (
@@ -28,13 +34,13 @@ export function SidebarUserNav({ user }: { user: User }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton className='data-[state=open]:bg-sidebar-accent bg-background data-[state=open]:text-sidebar-accent-foreground h-10'>
               <Image
-                src={`https://avatar.vercel.sh/${user.email}`}
+                src={user.image}
                 alt={user.email ?? 'User Avatar'}
                 width={24}
                 height={24}
                 className='rounded-full'
               />
-              <span className='truncate'>{user?.email}</span>
+              <span className='truncate'>{user.email}</span>
               <ChevronUp className='ml-auto' />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -49,18 +55,8 @@ export function SidebarUserNav({ user }: { user: User }) {
               {`Trocar Tema: ${theme === 'light' ? 'Escuro' : 'Claro'}`}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <button
-                type='button'
-                className='w-full cursor-pointer'
-                onClick={() => {
-                  signOut({
-                    redirectTo: '/'
-                  })
-                }}
-              >
-                Sair
-              </button>
+            <DropdownMenuItem className='w-full cursor-pointer' asChild>
+              <SignOutButton>Sair</SignOutButton>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
