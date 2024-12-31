@@ -36,9 +36,12 @@ export async function getUser(email: string): Promise<Array<User>> {
 
 export async function createUser(email: string, clerkId: string) {
   try {
-    return await db.insert(user).values({ email, clerkId })
+    return await db
+      .insert(user)
+      .values({ email, clerkId })
+      .returning({ userId: user.id })
   } catch (error) {
-    console.error('Failed to create user in database')
+    console.error('Failed to create user in database', error)
     throw error
   }
 }
