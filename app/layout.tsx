@@ -1,3 +1,4 @@
+import { ptBR } from '@clerk/localizations'
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata } from 'next'
 import { Toaster } from 'sonner'
@@ -41,7 +42,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider localization={ptBR}>
       <html
         lang='pt-br'
         // `next-themes` injects an extra classname to the body element to avoid

@@ -16,6 +16,7 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar'
 import { SignOutButton } from '@clerk/nextjs'
+import Link from 'next/link'
 
 export function SidebarUserNav({
   user
@@ -55,6 +56,9 @@ export function SidebarUserNav({
               {`Trocar Tema: ${theme === 'light' ? 'Escuro' : 'Claro'}`}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            <DropdownMenuItem className='w-full cursor-pointer' asChild>
+              <Link href={'/profile'}>Perfil</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem className='w-full cursor-pointer' asChild>
               <SignOutButton>Sair</SignOutButton>
             </DropdownMenuItem>
