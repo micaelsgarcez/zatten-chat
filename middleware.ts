@@ -1,18 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-const isPublicRoute = createRouteMatcher(['/login(.*)', '/register(.*)'])
+const isPublicRoute = createRouteMatcher([
+  '/login(.*)',
+  '/register(.*)',
+  '/api/webhook/register(.*)'
+])
 
 export default clerkMiddleware(async (auth, request) => {
-  console.log('request :', request)
-  const url = new URL(request.url)
-  console.log('url :', url)
-
-  // Ignore rotas que começam com /api/webhook
-  if (url.pathname.startsWith('/api/webhook')) {
-    console.log('Middleware ignorado para:', url.pathname)
-    return // Não executa o middleware
-  }
-
   if (!isPublicRoute(request)) {
     await auth.protect()
   }
