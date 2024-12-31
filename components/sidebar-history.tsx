@@ -47,7 +47,6 @@ import {
 import { useChatVisibility } from '@/hooks/use-chat-visibility'
 import type { Chat } from '@/lib/db/schema'
 import { fetcher } from '@/lib/utils'
-import { User } from '@clerk/nextjs/server'
 
 type GroupedChats = {
   today: Chat[]
@@ -148,7 +147,11 @@ export const ChatItem = memo(PureChatItem, (prevProps, nextProps) => {
   return true
 })
 
-export function SidebarHistory({ user }: { user: User | undefined }) {
+export function SidebarHistory({
+  user
+}: {
+  user: { email: string; image: string } | undefined
+}) {
   const { setOpenMobile } = useSidebar()
   const { id } = useParams()
   const pathname = usePathname()
