@@ -4,13 +4,12 @@ import { headers } from 'next/headers'
 export async function POST(request: Request) {
   try {
     const headersList = headers()
-    const teste = (await headersList).forEach((value, key) => {
-      console.log('KEY:', key)
-      console.log('VALUE:', value)
-    })
-    console.log('teste :', teste)
+    // const teste = (await headersList).forEach((value, key) => {
+    //   console.log('KEY:', key)
+    //   console.log('VALUE:', value)
+    // })
     const clerkData = await request.json()
-    console.log('data :', clerkData)
+    // console.log('data :', clerkData)
 
     console.log('emails :', clerkData.data.email_addresses[0].email_address)
     console.log('id :', clerkData.data.id)
@@ -19,15 +18,19 @@ export async function POST(request: Request) {
       clerkData.data.id
     )
 
-    await fetch(`https://api.clerk.com/v1/users/${clerkData.data.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        external_id: data[0].userId
-      }),
-      headers: {
-        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`
+    const responseExternalId = await fetch(
+      `https://api.clerk.com/v1/users/${clerkData.data.id}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({
+          external_id: data[0].userId
+        }),
+        headers: {
+          Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`
+        }
       }
-    })
+    )
+    console.log('responseExternalId :', responseExternalId)
 
     return new Response('User created', { status: 200 })
   } catch (error) {
