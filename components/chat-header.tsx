@@ -17,13 +17,15 @@ function PureChatHeader({
   messagesCount,
   selectedModelId,
   selectedVisibilityType,
-  isReadonly
+  isReadonly,
+  isChatInitiated = false
 }: {
   chatId: string
   messagesCount: number
   selectedModelId: string
   selectedVisibilityType: VisibilityType
   isReadonly: boolean
+  isChatInitiated?: boolean
 }) {
   const router = useRouter()
   const { open } = useSidebar()
@@ -56,7 +58,7 @@ function PureChatHeader({
       {!isReadonly && (
         <div
           className={`${
-            messagesCount > 0 ? 'opacity-50 pointer-events-none' : ''
+            isChatInitiated ? 'opacity-50 pointer-events-none' : ''
           }`}
         >
           <ModelSelector

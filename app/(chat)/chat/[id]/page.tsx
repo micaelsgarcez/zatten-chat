@@ -6,7 +6,7 @@ import { DataStreamHandler } from '@/components/data-stream-handler'
 import { DEFAULT_MODEL_NAME, models } from '@/lib/ai/models'
 import { getChatById, getMessagesByChatId } from '@/lib/db/queries'
 import { convertToUIMessages } from '@/lib/utils'
-import { auth } from '@clerk/nextjs/server'
+import { currentUser } from '@clerk/nextjs/server'
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params
@@ -17,14 +17,14 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     notFound()
   }
 
-  const { userId } = await auth()
+  const user = await currentUser()
 
   if (chat.visibility === 'private') {
-    if (!userId) {
+    if (!user || !user.externalId) {
       return notFound()
     }
 
-    if (userId !== chat.userId) {
+    if (user.externalId !== chat.userId) {
       return notFound()
     }
   }
@@ -47,6 +47,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           selectedModelId={selectedModelId}
           selectedVisibilityType='private'
           isReadonly={false}
+          isChatInitiated={true}
         />
       ) : (
         <Chat
@@ -56,6 +57,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           selectedModelId={selectedModelId}
           selectedVisibilityType='private'
           isReadonly={false}
+          isChatInitiated={true}
         />
       )}
       <DataStreamHandler id={id} />

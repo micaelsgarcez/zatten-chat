@@ -21,7 +21,8 @@ export default function ChatAssistant({
   initialMessages,
   selectedModelId,
   selectedVisibilityType,
-  isReadonly
+  isReadonly,
+  isChatInitiated
 }: {
   id: string
   defaultAssistantId?: string
@@ -29,6 +30,7 @@ export default function ChatAssistant({
   selectedModelId: string
   selectedVisibilityType: VisibilityType
   isReadonly: boolean
+  isChatInitiated: boolean
 }) {
   const [assistantId, setAssistantId] = useState(defaultAssistantId ?? '')
 
@@ -78,6 +80,7 @@ export default function ChatAssistant({
           selectedModelId={selectedModelId}
           selectedVisibilityType={selectedVisibilityType}
           isReadonly={isReadonly}
+          isChatInitiated={isChatInitiated}
         />
 
         <Messages

@@ -20,13 +20,15 @@ export function Chat({
   initialMessages,
   selectedModelId,
   selectedVisibilityType,
-  isReadonly
+  isReadonly,
+  isChatInitiated = false
 }: {
   id: string
   initialMessages: Array<Message>
   selectedModelId: string
   selectedVisibilityType: VisibilityType
   isReadonly: boolean
+  isChatInitiated: boolean
 }) {
   const { mutate } = useSWRConfig()
 
@@ -64,6 +66,7 @@ export function Chat({
           selectedModelId={selectedModelId}
           selectedVisibilityType={selectedVisibilityType}
           isReadonly={isReadonly}
+          isChatInitiated={isChatInitiated}
         />
 
         <Messages
