@@ -28,7 +28,7 @@ export function Chat({
   selectedModelId: string
   selectedVisibilityType: VisibilityType
   isReadonly: boolean
-  isChatInitiated: boolean
+  isChatInitiated?: boolean
 }) {
   const { mutate } = useSWRConfig()
 

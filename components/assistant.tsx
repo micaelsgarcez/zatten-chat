@@ -30,7 +30,7 @@ export default function ChatAssistant({
   selectedModelId: string
   selectedVisibilityType: VisibilityType
   isReadonly: boolean
-  isChatInitiated: boolean
+  isChatInitiated?: boolean
 }) {
   const [assistantId, setAssistantId] = useState(defaultAssistantId ?? '')
 
