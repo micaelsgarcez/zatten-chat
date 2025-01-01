@@ -22,15 +22,17 @@ export async function POST(request: Request) {
       `https://api.clerk.com/v1/users/${clerkData.data.id}`,
       {
         method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           external_id: data[0].userId
-        }),
-        headers: {
-          Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`
-        }
+        })
       }
     )
     console.log('responseExternalId :', responseExternalId)
+    console.log('data :', await responseExternalId.json())
 
     return new Response('User created', { status: 200 })
   } catch (error) {

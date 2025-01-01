@@ -8,8 +8,8 @@ Este projeto é um sistema de chat com assistentes da OpenAI, desenvolvido utili
 
 ### 1\. **Autenticação com Clerk**
 
-- [ ] Migrar o sistema atual de autenticação de `next-auth` para `Clerk`.
-- [ ] Adicionar suporte à autenticação de terceiros (exemplo: Google).
+- [x] Sistema de autenticação `Clerk`.
+- [x] Adicionar suporte à autenticação de terceiros (exemplo: Google).
 
 ### 2\. **Listagem de Chats**
 
@@ -45,7 +45,7 @@ Este projeto é um sistema de chat com assistentes da OpenAI, desenvolvido utili
 
 ## Tecnologias Utilizadas
 
-- **Next-auth** para autenticação.
+- **Clerk** para autenticação.
 - **Supabase** para banco de dados.
 - **OpenAI Assistants** para geração de respostas nos chats.
 - **DrizzleORM** (em migração para Supabase Realtime).
@@ -57,4 +57,4 @@ Este projeto é um sistema de chat com assistentes da OpenAI, desenvolvido utili
 
 Tomei a decisão de fazer toda a arquitetura do banco com drizzleORM para ajudar na agilidade mas não atendeu todas as funcionalidades (a questão do realtime do supabase para funcionar 100% o observer do insert dos dados precisa ser feito com SDK deles mesmo a melhor opção.)
 
-A aplicação está funcional, mas algumas melhorias ainda estão pendentes, principalmente a migração next-auth para o clerk, drizzleORM para Supabase Realtime e a criação do endpoint da API.
+A aplicação está funcional, mas algumas melhorias ainda estão pendentes drizzleORM para Supabase Realtime e a criação do endpoint da API.
