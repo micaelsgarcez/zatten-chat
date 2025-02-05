@@ -8,7 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Zatten Chat',
+  title: 'Chat',
   description: 'Teste'
 }
 

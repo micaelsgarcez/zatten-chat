@@ -30,7 +30,7 @@ Este projeto é um sistema de chat com assistentes da OpenAI, desenvolvido utili
 
 ### 6\. **Layout e Design**
 
-- [x] Criar um layout personalizado **Fiz com as cores da marca Zatten**.
+- [x] Criar um layout personalizado **Fiz com as cores da marca**.
 
 ### 7\. **API para Criação de Chats**
 
